@@ -1,0 +1,15 @@
+/*
+ * UartPacket.h
+ *
+ *  Created on: Mar 24, 2021
+ *      Author: exon9
+ */
+
+#ifndef UART_UARTPACKET_H_
+#define UART_UARTPACKET_H_
+
+#include "../Inc/main.h"
+
+
+
+#endif /* UART_UARTPACKET_H_ */

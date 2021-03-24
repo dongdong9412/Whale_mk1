@@ -1,0 +1,25 @@
+/*
+ * UartPacket.h
+ *
+ *  Created on: Mar 24, 2021
+ *      Author: exon9
+ */
+
+#ifndef UART_UARTPACKET_H_
+#define UART_UARTPACKET_H_
+
+#include "../Inc/main.h"
+
+typedef union packet_16bit_tag{
+	uint16_t R;
+	uint8_t Byte[2];
+	struct{
+		uint16_t checskum:4;
+		uint16_t data:8;
+		uint16_t id:3;
+		uint16_t rw:1;
+	};
+};
+
+
+#endif /* UART_UARTPACKET_H_ */
