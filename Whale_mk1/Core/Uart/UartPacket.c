@@ -33,10 +33,10 @@ uint8_t check_checksum(packet_16bit packet){
 	checksum_buf = (buf[0] + buf[1] + buf[2] + buf[3]) & 0x0F;
 
 	if(checksum_buf == 0){
-		return True;
+		return 1;
 	}
 	else{
-		return False;
+		return 0;
 	}
 }
 
