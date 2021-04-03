@@ -4,7 +4,7 @@ import numpy
 from queue import Queue
 
 def encoding_image(queue):
-    capture = cv2.VideoCapture(0)
+    capture = cv2.VideoCapture(-1)
 
     while True:
         ret, frame = capture.read()
@@ -37,7 +37,7 @@ def transfer_image(client_socket, addr, queue):
             
             stringData = queue.get()
             client_socket.send(str(len(stringData)).ljust(16).encode())
-            client_socket.sned(stringData)
+            client_socket.send(stringData)
         
         except ConnectionResetError as e:
             print('Disconnected by ' + addr[0],':',addr[1])

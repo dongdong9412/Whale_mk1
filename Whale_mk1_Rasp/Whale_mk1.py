@@ -62,7 +62,7 @@ if __name__ == '__main__':
     Port = 8080
     server_socket = socket(AF_INET, SOCK_STREAM) 
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
-    server_socket.bind((Host, Port)) 
+    server_socket.bind(('', Port)) 
     server_socket.listen() 
 
     print("Server Start")
