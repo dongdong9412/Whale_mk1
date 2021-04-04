@@ -24,10 +24,10 @@ if __name__ == '__main__':
 
     print("Server Start")
     client_socket, addr = server_socket.accept() 
-    task1 = Thread(target=Server.encoding_image, args=(enclosure_queue))
+    task1 = Thread(target=Server.encoding_image, args=(enclosure_queue, ))
     task1.start()
 
-    task2 = Thread(target=Server.transfer_image, args=(client_socket, addr, enclosure_queue))
+    task2 = Thread(target=Server.transfer_image, args=(client_socket, addr, enclosure_queue, ))
     task2.start()
 
     task1.join()
