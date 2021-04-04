@@ -34,10 +34,12 @@ def transfer_image(client_socket, addr, queue):
 
             if not data:
                 break
-            
-            stringData = queue.get()
-            client_socket.send(str(len(stringData)).ljust(16).encode())
-            client_socket.send(stringData)
+            elif data == '0':
+                print("Velocity")
+            elif data == '1':
+                stringData = queue.get()
+                client_socket.send(str(len(stringData)).ljust(16).encode())
+                client_socket.send(stringData)
         
         except ConnectionResetError as e:
             print('Disconnected by ' + addr[0],':',addr[1])

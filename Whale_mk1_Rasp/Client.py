@@ -18,8 +18,9 @@ Port = 8080
 client_socket = socket(AF_INET, SOCK_STREAM)
 client_socket.connect((Host, Port))
 
+command = 0
 while True:
-    message = '1'
+    message = str(command)
     client_socket.send(message.encode())
 
     length = recvall(client_socket, 16)
@@ -29,6 +30,7 @@ while True:
     decimg=cv2.imdecode(data, 1)
     cv2.imshow('Image', decimg)
 
+    command = (command + 1) % 2
     key = cv2.waitKey(1)
     if key == 27:
         break
