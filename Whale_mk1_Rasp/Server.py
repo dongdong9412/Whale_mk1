@@ -30,7 +30,7 @@ def transfer_image(client_socket, addr, queue):
 
     while True:
         try:
-            data = client_socket.recv(1024)
+            data = client_socket.recv(1)
             print(data)
             if not data:
                 break

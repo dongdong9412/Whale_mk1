@@ -24,12 +24,13 @@ while True:
     print(message)
     client_socket.send(message.encode())
 
-    length = recvall(client_socket, 16)
-    stringData = recvall(client_socket, int(length))
-    data = np.frombuffer(stringData, dtype='uint8')
+    if message == '1':
+        length = recvall(client_socket, 16)
+        stringData = recvall(client_socket, int(length))
+        data = np.frombuffer(stringData, dtype='uint8')
 
-    decimg=cv2.imdecode(data, 1)
-    cv2.imshow('Image', decimg)
+        decimg=cv2.imdecode(data, 1)
+        cv2.imshow('Image', decimg)
 
     command = (command + 1) % 2
     key = cv2.waitKey(1)
