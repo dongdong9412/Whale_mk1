@@ -25,8 +25,12 @@ def check_checksum(packet):
 
 def encode(rw, id, data):
     packet_buf = (rw << 15) | (id << 12) | (data << 4)
+    packet_buf = create_checksum(packet_buf)
 
-    return create_checksum(packet_buf)
+    result = bytearray(2)
+    result[0] = (packet_buf & 0xFF00) >> 8
+    result[1] = (packet_buf & 0x00FF)
+    return result
 
 def decode(packet):
     if check_checksum(packet):
@@ -37,3 +41,4 @@ def decode(packet):
         return rw_buf, id_buf, data_buf
     else:
         print("Checksum Error!!")
+

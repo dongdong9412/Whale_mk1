@@ -15,7 +15,9 @@ if __name__ == '__main__':
 #            print("Please Check Serial Port.")
 
     enclosure_queue = Queue()
-    Host = 'DongDong9412.iptime.org'
+    command_queue = Queue()
+    Host = '127.0.0.1'
+#   Host = 'DongDong9412.iptime.org'
     Port = 8080
     server_socket = socket(AF_INET, SOCK_STREAM) 
     server_socket.setsockopt(SOL_SOCKET, SO_REUSEADDR, 1)
@@ -27,8 +29,12 @@ if __name__ == '__main__':
     task1 = Thread(target=Server.encoding_image, args=(enclosure_queue, ))
     task1.start()
 
-    task2 = Thread(target=Server.transfer_image, args=(client_socket, addr, enclosure_queue, ))
+    task2 = Thread(target=Server.Gateway_task, args=(client_socket, addr, enclosure_queue, command_queue, ))
     task2.start()
+
+    task3 = Thread(target=Server.Serial_task, args=(ser, command_queue, ))
+    task3.start()
 
     task1.join()
     task2.join()
+    task3.join()
