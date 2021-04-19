@@ -1,0 +1,28 @@
+/*
+ * MotorControl.h
+ *
+ *  Created on: 2021. 4. 14.
+ *      Author: exon9
+ */
+
+#ifndef MOTOR_MOTORCONTROL_H_
+#define MOTOR_MOTORCONTROL_H_
+
+
+typedef struct PID_Control_tag{
+	float kP;
+	float kI;
+	float kD;
+
+	float P_Control;
+	float I_Control;
+	float D_Control;
+
+	float error;
+	float prev_error;
+	float I_error;
+
+}PID_Control;
+
+
+#endif /* MOTOR_MOTORCONTROL_H_ */

@@ -1,0 +1,35 @@
+/*
+ * MotorControl.c
+ *
+ *  Created on: 2021. 4. 14.
+ *      Author: exon9
+ */
+
+
+#include "MotorControl.h"
+
+
+
+PID_Control Motor;
+PID_Control Servo;
+
+
+void MotorControl_Init(){
+	Motor.kP = 0;
+	Motor.kI = 0;
+	Motor.kD = 0;
+
+	Motor.P_Control;
+	Motor.I_Control;
+	Motor.D_Control;
+
+	Motor.error;
+	Motor.prev_error;
+	Motor.I_error;
+	Motor.D_error;
+
+	Motor.current;
+	Motor.goal;
+
+	Motor.value;
+}

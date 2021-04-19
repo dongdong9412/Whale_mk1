@@ -1,3 +1,10 @@
-UartPacket.c:10:9:create_checksum	24	static
-UartPacket.c:24:9:check_checksum	24	static
-UartPacket.c:43:14:encode	16	static
+UartPacket.c:13:6:Uart_Init	16	static
+UartPacket.c:27:9:create_checksum	24	static
+UartPacket.c:41:9:check_checksum	24	static
+UartPacket.c:60:14:encode	16	static
+UartPacket.c:66:9:UartPacket_RxTask	80	static
+UartPacket.c:193:6:UartPacket_TxTask	64	static
+UartPacket.c:217:9:queue_empty	8	static
+UartPacket.c:226:9:queue_full	8	static
+UartPacket.c:235:6:queue_push	16	static
+UartPacket.c:244:6:queue_pop	16	static

@@ -32,12 +32,16 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "../Uart/UartPacket.h"
+#include "../LCD/Lcd_I2c.h"
+#include "../System/System.h"
+#include "../Motor/MotorControl.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+extern I2C_HandleTypeDef hi2c1;
+extern UART_HandleTypeDef huart2;
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -73,7 +77,8 @@ void Error_Handler(void);
 #define SWO_Pin GPIO_PIN_3
 #define SWO_GPIO_Port GPIOB
 /* USER CODE BEGIN Private defines */
-
+#define FALSE	0
+#define TRUE 	1
 /* USER CODE END Private defines */
 
 #ifdef __cplusplus

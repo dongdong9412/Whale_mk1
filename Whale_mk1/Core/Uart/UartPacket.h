@@ -9,20 +9,55 @@
 #define UART_UARTPACKET_H_
 
 #include "../Inc/main.h"
+#include "../Inc/Project.h"
+#include "../System/System.h"
 
-typedef union packet_16bit_tag{
-	uint16_t R;
-	uint8_t Byte[2];
+
+#define READ_COMMAND 		0
+#define WRITE_COMMAND 		1
+#define ANSWER_COMMAND 		2
+
+#define SRV_ID_VERSION		0
+#define SRV_ID_TORQUE		1
+#define SRV_ID_STEERING		2
+#define SRV_ID_BATTERY		3
+
+
+#define BUFFER_SIZE			4
+#define QUEUE_SIZE			10
+
+
+typedef union packet_32bit_tag{
+	uint32_t R;
+	uint8_t Byte[4];
 	struct{
-		uint16_t checskum:4;
-		uint16_t data:8;
-		uint16_t id:3;
-		uint16_t rw:1;
+		uint32_t checskum:8;
+		uint32_t data:16;
+		uint32_t id:6;
+		uint32_t rw:2;
 	}B;
-}packet_16bit;
+}packet_32bit;
 
-extern uint8_t create_checksum(uint8_t rw, uint8_t id, uint8_t data);
-extern uint8_t check_checksum(packet_16bit packet);
-extern packet_16bit encode(packet_16bit packet);
+typedef struct queue_tag{
+	uint8_t Buffer[QUEUE_SIZE][BUFFER_SIZE];
+	uint8_t FrontIndex;
+	uint8_t RearIndex;
+}queue;
+
+
+extern queue tx_queue;
+extern queue rx_queue;
+
+
+extern void Uart_Init();
+extern uint8_t create_checksum(uint8_t rw, uint8_t id, uint16_t data);
+extern uint8_t check_checksum(packet_32bit packet);
+extern packet_32bit encode(packet_32bit packet);
+extern uint8_t UartPacket_RxTask();
+extern void UartPacket_TxTask();
+extern uint8_t queue_empty(queue Queue);
+extern uint8_t queue_full(queue Queue);
+extern void queue_push(queue *Queue, uint8_t *buf);
+extern void queue_pop(queue *Queue, uint8_t *buf);
 
 #endif /* UART_UARTPACKET_H_ */

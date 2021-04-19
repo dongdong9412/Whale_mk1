@@ -30,8 +30,11 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
+Core/LCD \
+Core/Motor \
 Core/Src \
 Core/Startup \
+Core/System \
 Core/Uart \
 Drivers/STM32F4xx_HAL_Driver/Src \
 

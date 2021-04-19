@@ -1,0 +1,168 @@
+/*
+ * UartPacket.c
+ *
+ *  Created on: Mar 24, 2021
+ *      Author: exon9
+ */
+
+#include "UartPacket.h"
+
+queue tx_queue;
+queue rx_queue;
+
+void Uart_Init(){
+	for(int i = 0;i < BUFFER_SIZE;i++){
+		tx_queue.Buffer[0][i] = 0;
+		tx_queue.Buffer[1][i] = 0;
+		rx_queue.Buffer[0][i] = 0;
+		rx_queue.Buffer[1][i] = 0;
+	}
+	tx_queue.FrontIndex = 0;
+	tx_queue.RearIndex = 0;
+
+	rx_queue.FrontIndex = 0;
+	rx_queue.RearIndex = 0;
+}
+
+uint8_t create_checksum(uint8_t rw, uint8_t id, uint16_t data){
+	uint8_t checksum_buf;
+	uint8_t buf[3];
+
+	buf[0] = ((rw << 6) & 0xC0) | (id & 0x3F);
+	buf[1] = (data >> 8) & 0xFF;
+	buf[2] = (data & 0xFF);
+
+	checksum_buf = buf[0] + buf[1] + buf[2];
+	checksum_buf = (~checksum_buf + 1) & 0xFF;
+
+	return checksum_buf;
+}
+
+uint8_t check_checksum(packet_32bit packet){
+	uint8_t buf[4];
+	uint8_t checksum_buf;
+
+	buf[0] = (packet.R >> 24) & 0xFF;
+	buf[1] = (packet.R >> 16) & 0xFF;
+	buf[2] = (packet.R >> 8) & 0xFF;
+	buf[3] = packet.R & 0xFF;
+
+	checksum_buf = (buf[0] + buf[1] + buf[2] + buf[3]) & 0xFF;
+
+	if(checksum_buf == 0){
+		return 1;
+	}
+	else{
+		return 0;
+	}
+}
+
+packet_32bit encode(packet_32bit packet){
+	packet.B.checskum = create_checksum(packet.B.rw, packet.B.id, packet.B.data);
+
+	return packet;
+}
+
+void decode(system_Info *ptr_Info){
+	packet_32bit packet;
+
+	packet.Byte[0] = rx_queue.Buffer[0][rx_queue.FrontIndex];
+	packet.Byte[1] = rx_queue.Buffer[1][rx_queue.FrontIndex];
+	rx_queue.FrontIndex = (rx_queue.FrontIndex + 1) % QUEUE_SIZE;
+
+	if(check_checksum(packet)){
+		if(packet.B.rw == TRUE){
+			switch(packet.B.id){
+			case SRV_ID_VERSION:
+				// Read Only
+				break;
+			case SRV_ID_TORQUE:
+
+				break;
+			case SRV_ID_STEERING:
+
+				break;
+			case SRV_ID_BATTERY:
+				// Read Only
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			default:
+				// do nothing
+				break;
+			}
+		}
+		else if(packet.B.rw == FALSE){
+			switch(packet.B.id){
+			case SRV_ID_VERSION:
+				packet.B.rw = READ_COMMAND;
+				packet.B.id = SRV_ID_VERSION;
+				packet.B.data = softwareVersion;
+				packet.B.checskum = create_checksum(packet.B.rw, packet.B.id, packet.B.data);
+
+				tx_queue.Buffer[0][tx_queue.RearIndex] = packet.Byte[0];
+				tx_queue.Buffer[1][tx_queue.RearIndex] = packet.Byte[1];
+				tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
+				break;
+			case SRV_ID_TORQUE:
+
+				break;
+			case SRV_ID_STEERING:
+
+				break;
+			case SRV_ID_BATTERY:
+				// Read Only
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			case SRV_ID_RESERVED:
+
+				break;
+			default:
+				// do nothing
+				break;
+			}
+		}
+		else{
+			// do nothing
+		}
+	}
+	else{
+
+	}
+}
+
+bool queue_empty(queue Queue){
+	if(Queue.FrontIndex == Queue.RearIndex){
+		return TRUE;
+	}
+	else{
+		return FALSE;
+	}
+}
+
+bool queue_full(queue Queue){
+	if(Queue.FrontIndex == Queue.RearIndex){
+		return TRUE;
+	}
+	else{
+		return FALSE;
+	}
+}

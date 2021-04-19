@@ -22,7 +22,7 @@
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-#include "../Uart/UartPacket.h"
+
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -40,6 +40,8 @@
 /* USER CODE END PM */
 
 /* Private variables ---------------------------------------------------------*/
+I2C_HandleTypeDef hi2c1;
+
 TIM_HandleTypeDef htim3;
 
 UART_HandleTypeDef huart2;
@@ -48,9 +50,10 @@ DMA_HandleTypeDef hdma_usart2_rx;
 /* USER CODE BEGIN PV */
 uint16_t count_1s;
 uint8_t flag_1s;
-packet_16bit rx_command;
-packet_16bit tx_command;
-uint8_t rxBuffer[2];
+packet_32bit rx_command;
+packet_32bit tx_command;
+uint8_t rxBuffer[4];
+uint32_t count = 0;
 /* USER CODE END PV */
 
 /* Private function prototypes -----------------------------------------------*/
@@ -59,6 +62,7 @@ static void MX_GPIO_Init(void);
 static void MX_DMA_Init(void);
 static void MX_USART2_UART_Init(void);
 static void MX_TIM3_Init(void);
+static void MX_I2C1_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -99,22 +103,57 @@ int main(void)
   MX_DMA_Init();
   MX_USART2_UART_Init();
   MX_TIM3_Init();
+  MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
-  HAL_TIM_Base_Start_IT(&htim3);
+  System_Init();
+  Uart_Init();
+  HAL_UART_Receive_DMA(&huart2, rxBuffer, BUFFER_SIZE);
+  MotorControl_Init();
+  if(LCD_i2c_init(&hi2c1)){
+	  HAL_GPIO_WritePin(LD2_GPIO_Port, LD2_Pin, GPIO_PIN_SET);
+  }
+
+  /* Operating Sequence */
+  LCD_i2c_printf("Operating..");
+  while(!whale_Info.uart_connect){
+	  count++;
+
+	  if(queue_empty(rx_queue) == false){
+		  whale_Info.uart_connect = UartPacket_RxTask();
+	  }
+
+	  packet_32bit packet_temp;
+	  packet_temp.B.rw = READ_COMMAND;
+	  packet_temp.B.id = SRV_ID_VERSION;
+	  packet_temp.B.checskum = create_checksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
+//	  tx_queue.Buffer[tx_queue.RearIndex][0] = packet_temp.Byte[0];
+//	  tx_queue.Buffer[tx_queue.RearIndex][1] = packet_temp.Byte[1];
+//	  tx_queue.Buffer[tx_queue.RearIndex][2] = packet_temp.Byte[2];
+//	  tx_queue.Buffer[tx_queue.RearIndex][3] = packet_temp.Byte[3];
+//	  tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
+	  queue_push(&tx_queue, packet_temp.Byte);
+
+	  UartPacket_TxTask();
+	  HAL_Delay(500);
+
+  }
+  LCD_i2c_clear();
+  LCD_i2c_printf("Driving..");
+
   count_1s = 0;
   flag_1s = 0;
+  HAL_TIM_Base_Start_IT(&htim3);
+
   /* USER CODE END 2 */
 
   /* Infinite loop */
   /* USER CODE BEGIN WHILE */
   while (1)
   {
-    /* USER CODE END WHILE */
-	  if(flag_1s == 1){
-		  HAL_GPIO_TogglePin(LD2_GPIO_Port, LD2_Pin);
-		  flag_1s = 0;
-	  }
-    /* USER CODE BEGIN 3 */
+	  /* USER CODE END WHILE */
+	  uint8_t rtn;
+	  rtn = UartPacket_RxTask();
+	  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
 }
@@ -161,6 +200,40 @@ void SystemClock_Config(void)
   {
     Error_Handler();
   }
+}
+
+/**
+  * @brief I2C1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_I2C1_Init(void)
+{
+
+  /* USER CODE BEGIN I2C1_Init 0 */
+
+  /* USER CODE END I2C1_Init 0 */
+
+  /* USER CODE BEGIN I2C1_Init 1 */
+
+  /* USER CODE END I2C1_Init 1 */
+  hi2c1.Instance = I2C1;
+  hi2c1.Init.ClockSpeed = 100000;
+  hi2c1.Init.DutyCycle = I2C_DUTYCYCLE_2;
+  hi2c1.Init.OwnAddress1 = 0;
+  hi2c1.Init.AddressingMode = I2C_ADDRESSINGMODE_7BIT;
+  hi2c1.Init.DualAddressMode = I2C_DUALADDRESS_DISABLE;
+  hi2c1.Init.OwnAddress2 = 0;
+  hi2c1.Init.GeneralCallMode = I2C_GENERALCALL_DISABLE;
+  hi2c1.Init.NoStretchMode = I2C_NOSTRETCH_DISABLE;
+  if (HAL_I2C_Init(&hi2c1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN I2C1_Init 2 */
+
+  /* USER CODE END I2C1_Init 2 */
+
 }
 
 /**
@@ -294,16 +367,38 @@ static void MX_GPIO_Init(void)
 /* USER CODE BEGIN 4 */
 void HAL_UART_RxCpltCallback(UART_HandleTypeDef *haurt){
 	if(haurt->Instance == USART2){
-		HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_SET);
-		uint8_t temp[2];
-		rx_command.Byte[0] = rxBuffer[0];
-		rx_command.Byte[1] = rxBuffer[1];
+
+		uint8_t temp[4];
+		rx_command.Byte[0] = rxBuffer[3];
+		rx_command.Byte[1] = rxBuffer[2];
+		rx_command.Byte[2] = rxBuffer[1];
+		rx_command.Byte[3] = rxBuffer[0];
 
 		if(check_checksum(rx_command)){
+			if(queue_full(rx_queue) == false){
+				rx_queue.Buffer[rx_queue.RearIndex][0] = rx_command.Byte[0];
+				rx_queue.Buffer[rx_queue.RearIndex][1] = rx_command.Byte[1];
+				rx_queue.Buffer[rx_queue.RearIndex][2] = rx_command.Byte[2];
+				rx_queue.Buffer[rx_queue.RearIndex][3] = rx_command.Byte[3];
+				rx_queue.RearIndex = (rx_queue.RearIndex + 1) % QUEUE_SIZE;
+			}
+			else{
+				uint8_t rtn;
+				rtn = UartPacket_RxTask();
+
+				rx_queue.Buffer[rx_queue.RearIndex][0] = rx_command.Byte[0];
+				rx_queue.Buffer[rx_queue.RearIndex][1] = rx_command.Byte[1];
+				rx_queue.Buffer[rx_queue.RearIndex][2] = rx_command.Byte[2];
+				rx_queue.Buffer[rx_queue.RearIndex][3] = rx_command.Byte[3];
+				rx_queue.RearIndex = (rx_queue.RearIndex + 1) % QUEUE_SIZE;
+			}
+		}
+		else{
 			temp[0] = rx_command.Byte[0];
 			temp[1] = rx_command.Byte[1];
-			HAL_UART_Transmit(&huart2, temp, 2, 1000);
-			HAL_GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_PIN_RESET);
+			temp[2] = rx_command.Byte[2];
+			temp[3] = rx_command.Byte[3];
+			HAL_UART_Transmit(&huart2, temp, 4, 1000);
 		}
 	}
 }

@@ -56,4 +56,5 @@ def Serial_task(serial, command_queue):
         rw, id, data = Packet.decode(temp_buf)
         tx_buf = Packet.encode(rw, id, data)
         serial.write(tx_buf)
+ 
         

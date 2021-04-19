@@ -1,0 +1,19 @@
+/*
+ * MotorControl.h
+ *
+ *  Created on: 2021. 4. 14.
+ *      Author: exon9
+ */
+
+#ifndef MOTOR_MOTORCONTROL_H_
+#define MOTOR_MOTORCONTROL_H_
+
+
+typedef struct PID_Control_tag{
+	UInt8 P_Coefficient;
+	UInt8 I_Coefficient;
+	UInt8 D_Coefficient;
+}PID_Control;
+
+
+#endif /* MOTOR_MOTORCONTROL_H_ */
