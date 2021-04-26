@@ -2671,3 +2671,204 @@ Finished building: Whale_mk1.bin
  
 Finished building: Whale_mk1.list
  
+23:28:49 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-gcc "../Core/System/System.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/System/System.d" -MT"Core/System/System.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/System/System.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_hal_msp.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_hal_msp.d" -MT"Core/Src/stm32f4xx_hal_msp.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_it.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_it.d" -MT"Core/Src/stm32f4xx_it.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_it.o"
+arm-none-eabi-gcc "../Core/LCD/Lcd_I2c.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/LCD/Lcd_I2c.d" -MT"Core/LCD/Lcd_I2c.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/LCD/Lcd_I2c.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:141:3: error: 'count_1s' undeclared (first use in this function); did you mean 'count'?
+  141 |   count_1s = 0;
+      |   ^~~~~~~~
+      |   count
+../Core/Src/main.c:141:3: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Src/main.c:142:3: error: 'flag_1s' undeclared (first use in this function)
+  142 |   flag_1s = 0;
+      |   ^~~~~~~
+../Core/Src/main.c:152:12: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  152 |    uint8_t rtn;
+      |            ^~~
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:388:13: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  388 |     uint8_t rtn;
+      |             ^~~
+make: *** [Core/Src/subdir.mk:34: Core/Src/main.o] Error 1
+make: *** Waiting for unfinished jobs....
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+23:29:03 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:150:12: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  150 |    uint8_t rtn;
+      |            ^~~
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:386:13: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  386 |     uint8_t rtn;
+      |             ^~~
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  23928	    120	   2208	  26256	   6690	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+23:30:10 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/System/System.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/System/System.d" -MT"Core/System/System.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/System/System.o"
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  23928	    120	   2208	  26256	   6690	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+19:05:08 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-gcc "../Core/System/System.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/System/System.d" -MT"Core/System/System.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/System/System.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_hal_msp.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_hal_msp.d" -MT"Core/Src/stm32f4xx_hal_msp.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_it.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_it.d" -MT"Core/Src/stm32f4xx_it.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_it.o"
+arm-none-eabi-gcc "../Core/LCD/Lcd_I2c.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/LCD/Lcd_I2c.d" -MT"Core/LCD/Lcd_I2c.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/LCD/Lcd_I2c.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:130:12: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  130 |    uint8_t rtn;
+      |            ^~~
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:366:13: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  366 |     uint8_t rtn;
+      |             ^~~
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  23988	    120	   2208	  26316	   66cc	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+19:06:23 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  23988	    120	   2208	  26316	   66cc	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+23:06:10 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-gcc "../Core/System/System.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/System/System.d" -MT"Core/System/System.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/System/System.o"
+arm-none-eabi-gcc "../Core/Src/main.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/main.d" -MT"Core/Src/main.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/main.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_hal_msp.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_hal_msp.d" -MT"Core/Src/stm32f4xx_hal_msp.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_hal_msp.o"
+arm-none-eabi-gcc "../Core/Src/stm32f4xx_it.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Src/stm32f4xx_it.d" -MT"Core/Src/stm32f4xx_it.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Src/stm32f4xx_it.o"
+arm-none-eabi-gcc "../Core/LCD/Lcd_I2c.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/LCD/Lcd_I2c.d" -MT"Core/LCD/Lcd_I2c.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/LCD/Lcd_I2c.o"
+../Core/Src/main.c: In function 'main':
+../Core/Src/main.c:130:12: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  130 |    uint8_t rtn;
+      |            ^~~
+../Core/Src/main.c: In function 'HAL_UART_RxCpltCallback':
+../Core/Src/main.c:366:13: warning: variable 'rtn' set but not used [-Wunused-but-set-variable]
+  366 |     uint8_t rtn;
+      |             ^~~
+../Core/Uart/UartPacket.c: In function 'UartPacket_CheckConnection':
+../Core/Uart/UartPacket.c:53:1: error: 'z' undeclared (first use in this function)
+   53 | z
+      | ^
+../Core/Uart/UartPacket.c:53:1: note: each undeclared identifier is reported only once for each function it appears in
+../Core/Uart/UartPacket.c:53:2: error: expected ';' before 'while'
+   53 | z
+      |  ^
+      |  ;
+   54 |  while(UartPacket_AliveCount == CONNECTION_MAX_COUNT){
+      |  ~~~~~
+make: *** [Core/Uart/subdir.mk:19: Core/Uart/UartPacket.o] Error 1
+make: *** Waiting for unfinished jobs....
+"make -j12 all" terminated with exit code 2. Build might be incomplete.
+23:06:33 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  24228	    120	   2208	  26556	   67bc	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+23:09:43 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  24240	    120	   2208	  26568	   67c8	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 
+23:48:37 **** Incremental Build of configuration Debug for project Whale_mk1 ****
+make -j12 all 
+arm-none-eabi-gcc "../Core/Uart/UartPacket.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DDEBUG -DUSE_HAL_DRIVER -DSTM32F401xE -c -I../Core/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc -I../Drivers/STM32F4xx_HAL_Driver/Inc/Legacy -I../Drivers/CMSIS/Device/ST/STM32F4xx/Include -I../Drivers/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -fstack-usage -MMD -MP -MF"Core/Uart/UartPacket.d" -MT"Core/Uart/UartPacket.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Core/Uart/UartPacket.o"
+../Core/Uart/UartPacket.c: In function 'UartPacket_CheckConnection':
+../Core/Uart/UartPacket.c:68:27: warning: 'packet_temp.B.data' may be used uninitialized in this function [-Wmaybe-uninitialized]
+   68 |  packet_temp.B.checskum = UartPacket_CreateChecksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
+      |                           ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+arm-none-eabi-g++ -o "Whale_mk1.elf" @"objects.list"   -mcpu=cortex-m4 -T"D:\Github\Whale_mk1\Whale_mk1\STM32F401RETX_FLASH.ld" --specs=nosys.specs -Wl,-Map="Whale_mk1.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -lstdc++ -lsupc++ -Wl,--end-group
+Finished building target: Whale_mk1.elf
+ 
+arm-none-eabi-objdump -h -S  Whale_mk1.elf  > "Whale_mk1.list"
+arm-none-eabi-objcopy  -O binary  Whale_mk1.elf  "Whale_mk1.bin"
+arm-none-eabi-size   Whale_mk1.elf 
+   text	   data	    bss	    dec	    hex	filename
+  24284	    120	   2208	  26612	   67f4	Whale_mk1.elf
+Finished building: default.size.stdout
+ 
+Finished building: Whale_mk1.bin
+ 
+Finished building: Whale_mk1.list
+ 

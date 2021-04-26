@@ -48,8 +48,6 @@ UART_HandleTypeDef huart2;
 DMA_HandleTypeDef hdma_usart2_rx;
 
 /* USER CODE BEGIN PV */
-uint16_t count_1s;
-uint8_t flag_1s;
 packet_32bit rx_command;
 packet_32bit tx_command;
 uint8_t rxBuffer[4];
@@ -106,7 +104,7 @@ int main(void)
   MX_I2C1_Init();
   /* USER CODE BEGIN 2 */
   System_Init();
-  Uart_Init();
+  UartPacket_Init();
   HAL_UART_Receive_DMA(&huart2, rxBuffer, BUFFER_SIZE);
   MotorControl_Init();
   if(LCD_i2c_init(&hi2c1)){
@@ -115,33 +113,11 @@ int main(void)
 
   /* Operating Sequence */
   LCD_i2c_printf("Operating..");
-  while(!whale_Info.uart_connect){
-	  count++;
 
-	  if(queue_empty(rx_queue) == false){
-		  whale_Info.uart_connect = UartPacket_RxTask();
-	  }
-
-	  packet_32bit packet_temp;
-	  packet_temp.B.rw = READ_COMMAND;
-	  packet_temp.B.id = SRV_ID_VERSION;
-	  packet_temp.B.checskum = create_checksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
-//	  tx_queue.Buffer[tx_queue.RearIndex][0] = packet_temp.Byte[0];
-//	  tx_queue.Buffer[tx_queue.RearIndex][1] = packet_temp.Byte[1];
-//	  tx_queue.Buffer[tx_queue.RearIndex][2] = packet_temp.Byte[2];
-//	  tx_queue.Buffer[tx_queue.RearIndex][3] = packet_temp.Byte[3];
-//	  tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
-	  queue_push(&tx_queue, packet_temp.Byte);
-
-	  UartPacket_TxTask();
-	  HAL_Delay(500);
-
-  }
+  UartPacket_Connecting();
   LCD_i2c_clear();
   LCD_i2c_printf("Driving..");
 
-  count_1s = 0;
-  flag_1s = 0;
   HAL_TIM_Base_Start_IT(&htim3);
 
   /* USER CODE END 2 */
@@ -153,6 +129,10 @@ int main(void)
 	  /* USER CODE END WHILE */
 	  uint8_t rtn;
 	  rtn = UartPacket_RxTask();
+
+	  System_Scheduler();
+
+	  UartPacket_TxTask();
 	  /* USER CODE BEGIN 3 */
   }
   /* USER CODE END 3 */
@@ -374,8 +354,8 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *haurt){
 		rx_command.Byte[2] = rxBuffer[1];
 		rx_command.Byte[3] = rxBuffer[0];
 
-		if(check_checksum(rx_command)){
-			if(queue_full(rx_queue) == false){
+		if(UartPacket_CheckChecksum(rx_command)){
+			if(UartPacket_QueueFull(rx_queue) == false){
 				rx_queue.Buffer[rx_queue.RearIndex][0] = rx_command.Byte[0];
 				rx_queue.Buffer[rx_queue.RearIndex][1] = rx_command.Byte[1];
 				rx_queue.Buffer[rx_queue.RearIndex][2] = rx_command.Byte[2];
@@ -404,11 +384,7 @@ void HAL_UART_RxCpltCallback(UART_HandleTypeDef *haurt){
 }
 void HAL_TIM_PeriodElapsedCallback(TIM_HandleTypeDef *htim){
 	if(htim->Instance == TIM3){
-		count_1s++;
-		if(count_1s == 1000){
-			flag_1s = 1;
-			count_1s = 0;
-		}
+		System_TimerManager();
 	}
 }
 /* USER CODE END 4 */

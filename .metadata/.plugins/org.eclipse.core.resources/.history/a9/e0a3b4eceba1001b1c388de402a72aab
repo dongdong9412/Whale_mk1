@@ -1,0 +1,40 @@
+/*
+ * System.c
+ *
+ *  Created on: 2021. 4. 10.
+ *      Author: exon9
+ */
+
+
+#include "System.h"
+
+system_Info whale_Info;
+
+void System_Init(){
+	whale_Info.uart_connect = FALSE;
+	whale_Info.Transmission = P;
+}
+
+void System_Main(){
+	switch(whale_Info.Transmission){
+	case P:
+
+		break;
+	case R:
+
+		break;
+	case N:
+
+		break;
+	case D:
+
+		break;
+	default:
+
+		break;
+	}
+}
+
+void System_Scheduler(){
+
+}

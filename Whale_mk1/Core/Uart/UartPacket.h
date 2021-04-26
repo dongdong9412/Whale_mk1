@@ -13,18 +13,20 @@
 #include "../System/System.h"
 
 
-#define READ_COMMAND 		0
-#define WRITE_COMMAND 		1
-#define ANSWER_COMMAND 		2
+#define READ_COMMAND 			0
+#define WRITE_COMMAND 			1
+#define ANSWER_COMMAND 			2
 
-#define SRV_ID_VERSION		0
-#define SRV_ID_TORQUE		1
-#define SRV_ID_STEERING		2
-#define SRV_ID_BATTERY		3
+#define SRV_ID_VERSION			0
+#define SRV_ID_TORQUE			1
+#define SRV_ID_STEERING			2
+#define SRV_ID_BATTERY			3
 
 
-#define BUFFER_SIZE			4
-#define QUEUE_SIZE			10
+#define BUFFER_SIZE				4
+#define QUEUE_SIZE				10
+
+#define CONNECTION_MAX_COUNT	100
 
 
 typedef union packet_32bit_tag{
@@ -49,15 +51,17 @@ extern queue tx_queue;
 extern queue rx_queue;
 
 
-extern void Uart_Init();
-extern uint8_t create_checksum(uint8_t rw, uint8_t id, uint16_t data);
-extern uint8_t check_checksum(packet_32bit packet);
-extern packet_32bit encode(packet_32bit packet);
+extern void UartPacket_Init();
+extern void UartPacket_Connecting();
+extern void UartPacket_CheckConnection();
+extern uint8_t UartPacket_CreateChecksum(uint8_t rw, uint8_t id, uint16_t data);
+extern uint8_t UartPacket_CheckChecksum(packet_32bit packet);
+extern packet_32bit UartPacket_Encode(packet_32bit packet);
 extern uint8_t UartPacket_RxTask();
 extern void UartPacket_TxTask();
-extern uint8_t queue_empty(queue Queue);
-extern uint8_t queue_full(queue Queue);
-extern void queue_push(queue *Queue, uint8_t *buf);
-extern void queue_pop(queue *Queue, uint8_t *buf);
+extern uint8_t UartPacket_QueueEmpty(queue Queue);
+extern uint8_t UartPacket_QueueFull(queue Queue);
+extern void UartPacket_QueuePush(queue *Queue, uint8_t *buf);
+extern void UartPacket_QueuePop(queue *Queue, uint8_t *buf);
 
 #endif /* UART_UARTPACKET_H_ */

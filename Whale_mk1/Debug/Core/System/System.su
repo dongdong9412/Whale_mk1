@@ -1,2 +1,12 @@
-System.c:13:6:System_Init	4	static
-System.c:18:6:System_Main	4	static
+System.c:15:6:System_Init	4	static
+System.c:51:6:System_Main	4	static
+System.c:71:6:System_TimerManager	16	static
+System.c:81:6:System_Scheduler	16	static
+System.c:91:9:System_GetConnectInfo	4	static
+System.c:95:6:System_SetConnectInfo	16	static
+System.c:99:6:System_1ms_Task	4	static
+System.c:103:6:System_10ms_Task_1ms_Offset	4	static
+System.c:107:6:System_10ms_Task_6ms_Offset	4	static
+System.c:111:6:System_100ms_Task_2ms_Offset	8	static
+System.c:115:6:System_100ms_Task_52ms_Offset	4	static
+System.c:119:6:System_1s_Task_3ms_Offset	8	static

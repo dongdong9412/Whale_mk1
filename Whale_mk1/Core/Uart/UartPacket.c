@@ -9,8 +9,9 @@
 
 queue tx_queue;
 queue rx_queue;
+uint8_t UartPacket_AliveCount;
 
-void Uart_Init(){
+void UartPacket_Init(){
 	for(int i = 0;i < BUFFER_SIZE;i++){
 		tx_queue.Buffer[0][i] = 0;
 		tx_queue.Buffer[1][i] = 0;
@@ -22,9 +23,56 @@ void Uart_Init(){
 
 	rx_queue.FrontIndex = 0;
 	rx_queue.RearIndex = 0;
+
+	UartPacket_AliveCount = 0;
 }
 
-uint8_t create_checksum(uint8_t rw, uint8_t id, uint16_t data){
+void UartPacket_Connecting(){
+	while(!System_GetConnectInfo()){
+
+		if(UartPacket_QueueEmpty(rx_queue) == false){
+			System_SetConnectInfo(UartPacket_RxTask());
+		}
+
+		packet_32bit packet_temp;
+		packet_temp.B.rw = READ_COMMAND;
+		packet_temp.B.id = SRV_ID_VERSION;
+		packet_temp.B.checskum = UartPacket_CreateChecksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
+
+		UartPacket_QueuePush(&tx_queue, packet_temp.Byte);
+
+		UartPacket_TxTask();
+		HAL_Delay(1);
+
+	}
+}
+
+void UartPacket_CheckConnection(){
+	packet_32bit packet_temp;
+
+	if(UartPacket_AliveCount == CONNECTION_MAX_COUNT){
+		LCD_i2c_clear();
+		LCD_i2c_setCursor(1,1);
+		LCD_i2c_printf("Disconnect..");
+		while(1){
+			HAL_Delay(1000);
+			NVIC_SystemReset();
+			if(UartPacket_AliveCount != CONNECTION_MAX_COUNT)
+				break;
+		}
+	}
+
+
+	packet_temp.B.rw = READ_COMMAND;
+	packet_temp.B.id = SRV_ID_VERSION;
+	packet_temp.B.checskum = UartPacket_CreateChecksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
+
+	UartPacket_QueuePush(&tx_queue, packet_temp.Byte);
+
+	UartPacket_AliveCount++;
+}
+
+uint8_t UartPacket_CreateChecksum(uint8_t rw, uint8_t id, uint16_t data){
 	uint8_t checksum_buf;
 	uint8_t buf[3];
 
@@ -38,7 +86,7 @@ uint8_t create_checksum(uint8_t rw, uint8_t id, uint16_t data){
 	return checksum_buf;
 }
 
-uint8_t check_checksum(packet_32bit packet){
+uint8_t UartPacket_CheckChecksum(packet_32bit packet){
 	uint8_t buf[4];
 	uint8_t checksum_buf;
 
@@ -57,8 +105,8 @@ uint8_t check_checksum(packet_32bit packet){
 	}
 }
 
-packet_32bit encode(packet_32bit packet){
-	packet.B.checskum = create_checksum(packet.B.rw, packet.B.id, packet.B.data);
+packet_32bit UartPacket_Encode(packet_32bit packet){
+	packet.B.checskum = UartPacket_CreateChecksum(packet.B.rw, packet.B.id, packet.B.data);
 
 	return packet;
 }
@@ -67,14 +115,9 @@ uint8_t UartPacket_RxTask(){
 	uint8_t rtn = false;
 	packet_32bit packet;
 
-	queue_pop(&rx_queue, packet.Byte);
-//	packet.Byte[0] = rx_queue.Buffer[rx_queue.FrontIndex][0];
-//	packet.Byte[1] = rx_queue.Buffer[rx_queue.FrontIndex][1];
-//	packet.Byte[2] = rx_queue.Buffer[rx_queue.FrontIndex][2];
-//	packet.Byte[3] = rx_queue.Buffer[rx_queue.FrontIndex][3];
-//	rx_queue.FrontIndex = (rx_queue.FrontIndex + 1) % QUEUE_SIZE;
+	UartPacket_QueuePop(&rx_queue, packet.Byte);
 
-	if(check_checksum(packet)){
+	if(UartPacket_CheckChecksum(packet)){
 		if(packet.B.rw == WRITE_COMMAND){
 			switch(packet.B.id){
 			case SRV_ID_VERSION:
@@ -101,33 +144,18 @@ uint8_t UartPacket_RxTask(){
 				temp.B.rw = ANSWER_COMMAND;
 				temp.B.id = SRV_ID_VERSION;
 				temp.B.data = softwareVersion;
-				temp.B.checskum = create_checksum(temp.B.rw, temp.B.id, temp.B.data);
+				temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
 
-				if(queue_full(tx_queue) == FALSE){
-//					tx_queue.Buffer[tx_queue.RearIndex][0] = temp.Byte[0];
-//					tx_queue.Buffer[tx_queue.RearIndex][1] = temp.Byte[1];
-//					tx_queue.Buffer[tx_queue.RearIndex][2] = temp.Byte[2];
-//					tx_queue.Buffer[tx_queue.RearIndex][3] = temp.Byte[3];
-//					tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
-					queue_push(&tx_queue, temp.Byte);
+				if(UartPacket_QueueFull(tx_queue) == FALSE){
+					UartPacket_QueuePush(&tx_queue, temp.Byte);
 				}
 				else{
 					uint8_t tx_buf[4];
-					queue_pop(&tx_queue, tx_buf);
-//					tx_buf[0] = tx_queue.Buffer[tx_queue.FrontIndex][0];
-//					tx_buf[1] = tx_queue.Buffer[tx_queue.FrontIndex][1];
-//					tx_buf[2] = tx_queue.Buffer[tx_queue.FrontIndex][2];
-//					tx_buf[3] = tx_queue.Buffer[tx_queue.FrontIndex][3];
-//					tx_queue.FrontIndex = (tx_queue.FrontIndex + 1) % QUEUE_SIZE;
+					UartPacket_QueuePop(&tx_queue, tx_buf);
 
 					HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
 
-//					tx_queue.Buffer[tx_queue.RearIndex][0] = temp.Byte[0];
-//					tx_queue.Buffer[tx_queue.RearIndex][1] = temp.Byte[1];
-//					tx_queue.Buffer[tx_queue.RearIndex][2] = temp.Byte[2];
-//					tx_queue.Buffer[tx_queue.RearIndex][3] = temp.Byte[3];
-//					tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
-					queue_push(&tx_queue, temp.Byte);
+					UartPacket_QueuePush(&tx_queue, temp.Byte);
 				}
 				break;
 			case SRV_ID_TORQUE:
@@ -148,6 +176,7 @@ uint8_t UartPacket_RxTask(){
 			switch(packet.B.id){
 			case SRV_ID_VERSION:
 					if(packet.B.data == softwareVersion){
+						UartPacket_AliveCount--;
 						rtn = true;
 					}
 					else{
@@ -155,14 +184,9 @@ uint8_t UartPacket_RxTask(){
 						temp.B.rw = READ_COMMAND;
 						temp.B.id = SRV_ID_VERSION;
 						temp.B.data = 0x0;
-						temp.B.checskum = create_checksum(temp.B.rw, temp.B.id, temp.B.data);
+						temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
 
-//						tx_queue.Buffer[tx_queue.RearIndex][0] = temp.Byte[0];
-//						tx_queue.Buffer[tx_queue.RearIndex][1] = temp.Byte[1];
-//						tx_queue.Buffer[tx_queue.RearIndex][2] = temp.Byte[2];
-//						tx_queue.Buffer[tx_queue.RearIndex][3] = temp.Byte[3];
-//						tx_queue.RearIndex = (tx_queue.RearIndex + 1) % QUEUE_SIZE;
-						queue_push(&tx_queue, temp.Byte);
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
 					}
 				break;
 			case SRV_ID_TORQUE:
@@ -193,19 +217,15 @@ uint8_t UartPacket_RxTask(){
 void UartPacket_TxTask(){
 	uint8_t temp[4];
 
-	if(queue_empty(tx_queue) == false){
+	if(UartPacket_QueueEmpty(tx_queue) == false){
 		uint8_t tx_buf[4];
-		queue_pop(&tx_queue, temp);
+		UartPacket_QueuePop(&tx_queue, temp);
 
 		tx_buf[3] = temp[0];
 		tx_buf[2] = temp[1];
 		tx_buf[1] = temp[2];
 		tx_buf[0] = temp[3];
-//		tx_buf[3] = tx_queue.Buffer[tx_queue.FrontIndex][0];
-//		tx_buf[2] = tx_queue.Buffer[tx_queue.FrontIndex][1];
-//		tx_buf[1] = tx_queue.Buffer[tx_queue.FrontIndex][2];
-//		tx_buf[0] = tx_queue.Buffer[tx_queue.FrontIndex][3];
-//		tx_queue.FrontIndex = (tx_queue.FrontIndex + 1) % QUEUE_SIZE;
+
 
 		HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
 	}
@@ -214,7 +234,7 @@ void UartPacket_TxTask(){
 	}
 }
 
-uint8_t queue_empty(queue Queue){
+uint8_t UartPacket_QueueEmpty(queue Queue){
 	if(Queue.FrontIndex == Queue.RearIndex){
 		return TRUE;
 	}
@@ -223,7 +243,7 @@ uint8_t queue_empty(queue Queue){
 	}
 }
 
-uint8_t queue_full(queue Queue){
+uint8_t UartPacket_QueueFull(queue Queue){
 	if(Queue.FrontIndex == ((Queue.RearIndex + 1) % QUEUE_SIZE)){
 		return TRUE;
 	}
@@ -232,7 +252,7 @@ uint8_t queue_full(queue Queue){
 	}
 }
 
-void queue_push(queue *Queue, uint8_t *buf){
+void UartPacket_QueuePush(queue *Queue, uint8_t *buf){
 	Queue->Buffer[Queue->RearIndex][0] = buf[0];
 	Queue->Buffer[Queue->RearIndex][1] = buf[1];
 	Queue->Buffer[Queue->RearIndex][2] = buf[2];
@@ -241,7 +261,7 @@ void queue_push(queue *Queue, uint8_t *buf){
 	Queue->RearIndex = (Queue->RearIndex + 1) % QUEUE_SIZE;
 }
 
-void queue_pop(queue *Queue, uint8_t *buf){
+void UartPacket_QueuePop(queue *Queue, uint8_t *buf){
 	buf[0] = Queue->Buffer[Queue->FrontIndex][0];
 	buf[1] = Queue->Buffer[Queue->FrontIndex][1];
 	buf[2] = Queue->Buffer[Queue->FrontIndex][2];
