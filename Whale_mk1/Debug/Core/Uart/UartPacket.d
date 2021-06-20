@@ -31,12 +31,11 @@ Core/Uart/UartPacket.o: ../Core/Uart/UartPacket.c \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_tim_ex.h \
  ../Drivers/STM32F4xx_HAL_Driver/Inc/stm32f4xx_hal_uart.h \
  ../Core/Uart/../Inc/../Uart/UartPacket.h \
- ../Core/Uart/../Inc/../LCD/Lcd_I2c.h \
- ../Core/Uart/../Inc/../LCD/../Inc/main.h \
  ../Core/Uart/../Inc/../System/System.h \
  ../Core/Uart/../Inc/../System/../Inc/main.h \
  ../Core/Uart/../Inc/../Motor/MotorControl.h \
- ../Core/Uart/../Inc/Project.h ../Core/Uart/../Inc/main.h \
+ ../Core/Uart/../Inc/../Motor/../Inc/main.h ../Core/Uart/../Inc/Project.h \
+ ../Core/Uart/../Inc/main.h ../Core/Uart/../Inc/Project.h \
  ../Core/Uart/../System/System.h
 
 ../Core/Uart/UartPacket.h:
@@ -105,18 +104,18 @@ Core/Uart/UartPacket.o: ../Core/Uart/UartPacket.c \
 
 ../Core/Uart/../Inc/../Uart/UartPacket.h:
 
-../Core/Uart/../Inc/../LCD/Lcd_I2c.h:
-
-../Core/Uart/../Inc/../LCD/../Inc/main.h:
-
 ../Core/Uart/../Inc/../System/System.h:
 
 ../Core/Uart/../Inc/../System/../Inc/main.h:
 
 ../Core/Uart/../Inc/../Motor/MotorControl.h:
 
+../Core/Uart/../Inc/../Motor/../Inc/main.h:
+
 ../Core/Uart/../Inc/Project.h:
 
 ../Core/Uart/../Inc/main.h:
+
+../Core/Uart/../Inc/Project.h:
 
 ../Core/Uart/../System/System.h:

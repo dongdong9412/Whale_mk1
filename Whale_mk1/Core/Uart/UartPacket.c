@@ -30,7 +30,7 @@ void UartPacket_Init(){
 void UartPacket_Connecting(){
 	while(!System_GetConnectInfo()){
 
-		if(UartPacket_QueueEmpty(rx_queue) == false){
+		if(UartPacket_QueueEmpty(rx_queue) == FALSE){
 			System_SetConnectInfo(UartPacket_RxTask());
 		}
 
@@ -50,21 +50,14 @@ void UartPacket_Connecting(){
 void UartPacket_CheckConnection(){
 	packet_32bit packet_temp;
 
-	if(UartPacket_AliveCount == CONNECTION_MAX_COUNT){
-		LCD_i2c_clear();
-		LCD_i2c_setCursor(1,1);
-		LCD_i2c_printf("Disconnect..");
-		while(1){
-			HAL_Delay(1000);
-			NVIC_SystemReset();
-			if(UartPacket_AliveCount != CONNECTION_MAX_COUNT)
-				break;
-		}
+	if(UartPacket_AliveCount > CONNECTION_MAX_COUNT){
+
 	}
 
 
 	packet_temp.B.rw = READ_COMMAND;
 	packet_temp.B.id = SRV_ID_VERSION;
+	packet_temp.B.data = 0;
 	packet_temp.B.checskum = UartPacket_CreateChecksum(packet_temp.B.rw, packet_temp.B.id, packet_temp.B.data);
 
 	UartPacket_QueuePush(&tx_queue, packet_temp.Byte);
@@ -115,68 +108,130 @@ uint8_t UartPacket_RxTask(){
 	uint8_t rtn = false;
 	packet_32bit packet;
 
-	UartPacket_QueuePop(&rx_queue, packet.Byte);
+	if(UartPacket_QueueEmpty(rx_queue) == false){
+		UartPacket_QueuePop(&rx_queue, packet.Byte);
 
-	if(UartPacket_CheckChecksum(packet)){
-		if(packet.B.rw == WRITE_COMMAND){
-			switch(packet.B.id){
-			case SRV_ID_VERSION:
-				// Read Only
-				break;
-			case SRV_ID_TORQUE:
+		if(UartPacket_CheckChecksum(packet)){
+			if(packet.B.rw == WRITE_COMMAND){
+				switch(packet.B.id){
+				case SRV_ID_VERSION:
+					// Read Only
+					break;
+				case SRV_ID_TORQUE:
 
-				break;
-			case SRV_ID_STEERING:
+					break;
+				case SRV_ID_STEERING:
 
-				break;
-			case SRV_ID_BATTERY:
-				// Read Only
-				break;
-			default:
-				// do nothing
-				break;
-			}
-		}
-		else if(packet.B.rw == READ_COMMAND){
-			packet_32bit temp;
-			switch(packet.B.id){
-			case SRV_ID_VERSION:
-				temp.B.rw = ANSWER_COMMAND;
-				temp.B.id = SRV_ID_VERSION;
-				temp.B.data = softwareVersion;
-				temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
-
-				if(UartPacket_QueueFull(tx_queue) == FALSE){
-					UartPacket_QueuePush(&tx_queue, temp.Byte);
+					break;
+				case SRV_ID_BATTERY:
+					// Read Only
+					break;
+				default:
+					// do nothing
+					break;
 				}
-				else{
-					uint8_t tx_buf[4];
-					UartPacket_QueuePop(&tx_queue, tx_buf);
-
-					HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
-
-					UartPacket_QueuePush(&tx_queue, temp.Byte);
-				}
-				break;
-			case SRV_ID_TORQUE:
-
-				break;
-			case SRV_ID_STEERING:
-
-				break;
-			case SRV_ID_BATTERY:
-				// Read Only
-				break;
-			default:
-				// do nothing
-				break;
 			}
-		}
-		else if(packet.B.rw == ANSWER_COMMAND){
-			switch(packet.B.id){
-			case SRV_ID_VERSION:
+			else if(packet.B.rw == READ_COMMAND){
+				packet_32bit temp;
+				switch(packet.B.id){
+				case SRV_ID_VERSION:
+					temp.B.rw = ANSWER_COMMAND;
+					temp.B.id = SRV_ID_VERSION;
+					temp.B.data = softwareVersion;
+					temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
+
+					if(UartPacket_QueueFull(tx_queue) == FALSE){
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					else{
+						uint8_t tx_buf[4];
+						UartPacket_QueuePop(&tx_queue, tx_buf);
+
+						HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
+
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					break;
+				case SRV_ID_TORQUE:
+
+					break;
+				case SRV_ID_STEERING:
+
+					break;
+				case SRV_ID_BATTERY:
+					// Read Only
+					break;
+				case SRV_ID_AX:
+					temp.B.rw = ANSWER_COMMAND;
+					temp.B.id = SRV_ID_AX;
+					temp.B.data = MPU6050_Get_Ax();
+					temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
+
+					if(UartPacket_QueueFull(tx_queue) == FALSE){
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					else{
+						uint8_t tx_buf[4];
+						UartPacket_QueuePop(&tx_queue, tx_buf);
+
+						HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
+
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					break;
+				case SRV_ID_AY:
+					// Read Only
+					temp.B.rw = ANSWER_COMMAND;
+					temp.B.id = SRV_ID_AY;
+					temp.B.data = MPU6050_Get_Ay();
+					temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
+
+					if(UartPacket_QueueFull(tx_queue) == FALSE){
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					else{
+						uint8_t tx_buf[4];
+						UartPacket_QueuePop(&tx_queue, tx_buf);
+
+						HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
+
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					break;
+				case SRV_ID_AZ:
+					// Read Only
+					temp.B.rw = ANSWER_COMMAND;
+					temp.B.id = SRV_ID_AZ;
+					temp.B.data = MPU6050_Get_Az();
+					temp.B.checskum = UartPacket_CreateChecksum(temp.B.rw, temp.B.id, temp.B.data);
+
+					if(UartPacket_QueueFull(tx_queue) == FALSE){
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					else{
+						uint8_t tx_buf[4];
+						UartPacket_QueuePop(&tx_queue, tx_buf);
+
+						HAL_UART_Transmit(&huart2, tx_buf, 4, 1000);
+
+						UartPacket_QueuePush(&tx_queue, temp.Byte);
+					}
+					break;
+				default:
+					// do nothing
+					break;
+				}
+			}
+			else if(packet.B.rw == ANSWER_COMMAND){
+				switch(packet.B.id){
+				case SRV_ID_VERSION:
 					if(packet.B.data == softwareVersion){
-						UartPacket_AliveCount--;
+						if(UartPacket_AliveCount > 0){
+							UartPacket_AliveCount--;
+						}
+						else{
+							// do nothing
+						}
 						rtn = true;
 					}
 					else{
@@ -188,27 +243,31 @@ uint8_t UartPacket_RxTask(){
 
 						UartPacket_QueuePush(&tx_queue, temp.Byte);
 					}
-				break;
-			case SRV_ID_TORQUE:
+					break;
+				case SRV_ID_TORQUE:
 
-				break;
-			case SRV_ID_STEERING:
+					break;
+				case SRV_ID_STEERING:
 
-				break;
-			case SRV_ID_BATTERY:
-				// Read Only
-				break;
-			default:
+					break;
+				case SRV_ID_BATTERY:
+					// Read Only
+					break;
+				default:
+					// do nothing
+					break;
+				}
+			}
+			else{
 				// do nothing
-				break;
 			}
 		}
 		else{
-			// do nothing
+
 		}
 	}
 	else{
-
+		// Rx queue Empty
 	}
 
 	return rtn;

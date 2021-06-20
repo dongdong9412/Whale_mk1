@@ -1,5 +1,6 @@
 import struct
 from queue import Queue
+import time
 
 def create_checksum(packet):
     buf_1 = (packet >> 24) & 0xFF
@@ -50,44 +51,80 @@ def decode(packet):
         print("Checksum Error!!")
 
 
-def rx_Task(ser):
-    connect_flag = 0
+def rx_Task(ser, rx_queue, whaleInfo):
+    while whaleInfo['uartConnect']:
+        rx_packet = ser.read_until(size=4)
+        if not rx_queue.full():
+            rx_queue.put(rx_packet)
 
-    rx_packet = ser.read_until(size=4)
-
-    rw, id, data = decode(rx_packet)
-
-    print(rx_packet, rw, id, data)
-
-    if rw == 0:
-        if id == 0:
-            rw = 2
-            id = 0
-            data = 0
-            tx_packet = encode(rw, id, data)
+def tx_Task(ser, tx_queue, whaleInfo):
+    while whaleInfo['uartConnect']:
+        if not tx_queue.empty():
+            tx_packet = tx_queue.get()
+            print("Tx: ", decode(tx_packet))
             ser.write(tx_packet)
-            #print("Send Data: ", tx_packet)
-    elif rw == 2:
-        if id == 0:
-            if data == 0:
-                connect_flag = True
 
-    return connect_flag
+def execute_Command(rx_queue, tx_queue, whaleInfo):
+    while whaleInfo['uartConnect']:
+        tx_rw = 0
+        tx_id = 0
+        tx_data = 0
+        tx_packet = encode(tx_rw, tx_id, tx_data)
+        tx_queue.put(tx_packet)
+        if not rx_queue.empty():
+            rx_packet = rx_queue.get()
+            rw, id, data = decode(rx_packet)
+            print("Rx: ", rw, id, data)
+            print(whaleInfo['uartConnect'], whaleInfo['errorCount'])
+            # Read Command #
+            if rw == 0:
+                # Software Version #
+                if id == 0:
+                    tx_rw = 2
+                    tx_id = 0
+                    tx_data = 1
+                    tx_packet = encode(tx_rw, tx_id, tx_data)
+                    tx_queue.put(tx_packet)
 
-def tx_Task(ser, serviceID):
-    if serviceID == 0:
-        rw = 0
-        id = 0
-        data = 0xFFFF
-        tx_packet = encode(rw, id, data)
+            # Write Command #
+
+            # Answer Command #
+            if rw == 2:
+                if id == 0:
+                    if data == 1:
+                        if whaleInfo['errorCount'] > 0:
+                            whaleInfo['errorCount'] = whaleInfo['errorCount'] - 1
+                            tx_rw = 2
+                        tx_id = 0
+                        tx_data = 0
+                        tx_packet = encode(tx_rw, tx_id, tx_data)
+                        tx_queue.put(tx_packet)
+                    else:
+                        whaleInfo['errorCount'] = whaleInfo['errorCount'] + 1
+                        if whaleInfo['errorCount'] == 1000:
+                            whaleInfo['uartConnect'] = False
+            
+def uartInit(ser, whaleInfo):
+    while not whaleInfo['uartConnect']:
+        time.sleep(1)
+        tx_rw = 0
+        tx_id = 0
+        tx_data = 1
+        tx_packet = encode(tx_rw, tx_id, tx_data)
         ser.write(tx_packet)
 
-def Packet_Init(ser):
-    connect_flag = False
-    
-    while not connect_flag:
-        tx_Task(ser, 0)
-        connect_flag = rx_Task(ser)
-    
-        tx_Task(ser, 0)
-        connect_flag = rx_Task(ser)
+        rx_packet = ser.read_until(size=4)
+        rx_rw, rx_id, rx_data = decode(rx_packet)
+
+        if rx_rw == 0:
+            if rx_id == 0:
+                tx_rw = 2
+                tx_id = 0
+                tx_data = 1
+                tx_packet = encode(tx_rw, tx_id, tx_data)
+                ser.write(tx_packet)
+        elif rx_rw == 2:
+            if rx_id == 0:
+                if rx_data == 1:
+                    whaleInfo['uartConnect'] = True
+        

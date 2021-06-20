@@ -10,7 +10,8 @@
 
 #include "main.h"
 
-#define softwareVersion 0
+#define Debug Enable
+#define softwareVersion 1
 
 
 

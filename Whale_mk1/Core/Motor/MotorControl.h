@@ -8,6 +8,7 @@
 #ifndef MOTOR_MOTORCONTROL_H_
 #define MOTOR_MOTORCONTROL_H_
 
+#include "../Inc/main.h"
 
 typedef struct PID_Control_tag{
 	float kP;
@@ -33,5 +34,7 @@ extern PID_Control Motor;
 extern PID_Control Servo;
 
 extern void MotorControl_Init();
+extern void Motor_Forward();
+extern void Motor_Backward();
 
 #endif /* MOTOR_MOTORCONTROL_H_ */

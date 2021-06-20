@@ -1,0 +1,7 @@
+MPU6050.c:13:6:MPU6050_Checksum	24	static
+MPU6050.c:26:6:MPU6050_Update_Acceleration	16	static
+MPU6050.c:34:6:MPU6050_Update_AngularVelocity	16	static
+MPU6050.c:42:6:MPU6050_Update_Angle	16	static
+MPU6050.c:50:10:MPU6050_Get_Ax	4	static
+MPU6050.c:54:10:MPU6050_Get_Ay	4	static
+MPU6050.c:58:10:MPU6050_Get_Az	4	static

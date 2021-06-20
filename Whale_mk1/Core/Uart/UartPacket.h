@@ -11,6 +11,7 @@
 #include "../Inc/main.h"
 #include "../Inc/Project.h"
 #include "../System/System.h"
+#include <stdbool.h>
 
 
 #define READ_COMMAND 			0
@@ -21,6 +22,9 @@
 #define SRV_ID_TORQUE			1
 #define SRV_ID_STEERING			2
 #define SRV_ID_BATTERY			3
+#define SRV_ID_AX				4
+#define SRV_ID_AY				5
+#define SRV_ID_AZ				6
 
 
 #define BUFFER_SIZE				4

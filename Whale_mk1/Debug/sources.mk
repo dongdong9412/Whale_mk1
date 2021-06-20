@@ -30,7 +30,7 @@ CPP_DEPS :=
 
 # Every subdirectory with source files must be described here
 SUBDIRS := \
-Core/LCD \
+Core/MPU6050 \
 Core/Motor \
 Core/Src \
 Core/Startup \

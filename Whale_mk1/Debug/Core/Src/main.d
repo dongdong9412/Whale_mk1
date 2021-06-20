@@ -32,9 +32,9 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
  ../Core/Inc/../Uart/UartPacket.h ../Core/Inc/../Uart/../Inc/main.h \
  ../Core/Inc/../Uart/../Inc/Project.h ../Core/Inc/../Uart/../Inc/main.h \
  ../Core/Inc/../Uart/../System/System.h \
- ../Core/Inc/../Uart/../System/../Inc/main.h ../Core/Inc/../LCD/Lcd_I2c.h \
- ../Core/Inc/../LCD/../Inc/main.h ../Core/Inc/../System/System.h \
- ../Core/Inc/../Motor/MotorControl.h
+ ../Core/Inc/../Uart/../System/../Inc/main.h \
+ ../Core/Inc/../System/System.h ../Core/Inc/../Motor/MotorControl.h \
+ ../Core/Inc/../Motor/../Inc/main.h ../Core/Inc/Project.h
 
 ../Core/Inc/main.h:
 
@@ -110,10 +110,10 @@ Core/Src/main.o: ../Core/Src/main.c ../Core/Inc/main.h \
 
 ../Core/Inc/../Uart/../System/../Inc/main.h:
 
-../Core/Inc/../LCD/Lcd_I2c.h:
-
-../Core/Inc/../LCD/../Inc/main.h:
-
 ../Core/Inc/../System/System.h:
 
 ../Core/Inc/../Motor/MotorControl.h:
+
+../Core/Inc/../Motor/../Inc/main.h:
+
+../Core/Inc/Project.h:

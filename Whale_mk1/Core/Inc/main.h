@@ -33,9 +33,9 @@ extern "C" {
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
 #include "../Uart/UartPacket.h"
-#include "../LCD/Lcd_I2c.h"
 #include "../System/System.h"
 #include "../Motor/MotorControl.h"
+#include "Project.h"
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
@@ -53,6 +53,8 @@ extern UART_HandleTypeDef huart2;
 /* USER CODE BEGIN EM */
 
 /* USER CODE END EM */
+
+void HAL_TIM_MspPostInit(TIM_HandleTypeDef *htim);
 
 /* Exported functions prototypes ---------------------------------------------*/
 void Error_Handler(void);
